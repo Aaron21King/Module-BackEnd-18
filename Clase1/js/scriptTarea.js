@@ -17,7 +17,7 @@ numeroMayor(array)
 /*let string = "Mi nombre es Aaron y soy un koder.";
 let stringRevierto = "";
    
-for(var i = string.length-1; i>=0; i--)
+for(let i = string.length-1; i>=0; i--)
 {
   
   stringRevierto += string[i];
