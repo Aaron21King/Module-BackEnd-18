@@ -1,9 +1,9 @@
 const express = require("express");
 const fs = require("fs/promises");
 
-const server = express();
+//const server = express();
 
-// middleware para convertir request a JSON
+
 server.use(express.json());
 
 server.get("/", (request, response) => {
@@ -11,51 +11,43 @@ server.get("/", (request, response) => {
 });
 
 server.get("/koders", async (req, res) => {
-  const archivo = await fs.readFile("koders.json", "utf8"); // el archivo es un String
+  const archivo = await fs.readFile("koders.json", "utf8"); 
   console.log(archivo);
-  const objeto = JSON.parse(archivo); // convierte un string a un objeto
+  const objeto = JSON.parse(archivo); 
   console.log(objeto);
-  const koders = objeto.koders; // accedemos solo a los koders que estan en un arreglo
+  const koders = objeto.koders; 
 
   res.json(koders);
 });
 
 server.post("/koders", async (req, res) => {
-  // Guardamos el Koder en una constante
+ 
   console.log("body:", req.body);
   const koder = req.body;
-
-  // Cargar Koders
-  const archivo = await fs.readFile("koders.json", "utf8"); // el archivo es un String
-  const objeto = JSON.parse(archivo); // convierte un string a un objeto
-  const koders = objeto.koders; // accedemos solo a los koders que estan en un arreglo
-
-  // Agregar un nuevo Koder
+  const archivo = await fs.readFile("koders.json", "utf8"); 
+  const objeto = JSON.parse(archivo);
+  const koders = objeto.koders; 
   koders.push(koder);
 
-  // Guardar cambios
-  const nuevoArchivo = JSON.stringify(objeto, null, 2); // Convertimos el objeto a un String nuevo
+ 
+  const nuevoArchivo = JSON.stringify(objeto, null, 2); 
   await fs.writeFile("koders.json", nuevoArchivo, "utf8");
 
-  // Enviamos respuesta
-  res.status(201); // Estado de creado
+ 
+  res.status(201); 
   res.json(koders);
 });
 
 server.patch("/koders/:nombre", async (req, res) => {
-  // Guardamos el nombre del Koder a Cambiar
   const nombre = req.params.nombre;
-
-  // Guardamos el Koder en una constante
   console.log("body:", req.body);
   const newKoder = req.body;
 
-  // Cargar Koders
-  const archivo = await fs.readFile("koders.json", "utf8"); // el archivo es un String
-  const objeto = JSON.parse(archivo); // convierte un string a un objeto
-  const koders = objeto.koders; // accedemos solo a los koders que estan en un arreglo
+  
+  const archivo = await fs.readFile("koders.json", "utf8"); 
+  const objeto = JSON.parse(archivo); 
+  const koders = objeto.koders; 
 
-  // TODO: Buscar y actualizar al Koder cuyo koder.nombre sea igual a nombre
   for (let i = 0; i < koders.length; i++) {
     const oldKoder = koders[i];
 
@@ -64,39 +56,30 @@ server.patch("/koders/:nombre", async (req, res) => {
       oldKoder.genero = newKoder.genero;
     }
   }
-
-  // Guardar cambios
-  const nuevoArchivo = JSON.stringify(objeto, null, 2); // Convertimos el objeto a un String nuevo
+  const nuevoArchivo = JSON.stringify(objeto, null, 2); 
   await fs.writeFile("koders.json", nuevoArchivo, "utf8");
 
-  // Enviamos respuesta
-  res.status(200); // Estado de creado
+  res.status(200); 
   res.json(koders);
 });
 
 server.delete("/koders/:nombre", async (req, res) => {
-  // Guardamos el nombre del Koder a Cambiar
   const nombre = req.params.nombre;
 
-  // Cargar Koders
-  const archivo = await fs.readFile("koders.json", "utf8"); // el archivo es un String
-  const objeto = JSON.parse(archivo); // convierte un string a un objeto
-  const koders = objeto.koders; // accedemos solo a los koders que estan en un arreglo
 
-  // Voy a eliminar al Koder que se llame como la constante nombre
+  const archivo = await fs.readFile("koders.json", "utf8"); 
+  const objeto = JSON.parse(archivo); 
+  const koders = objeto.koders; 
   const newKoders = koders.filter((koder) => koder.nombre !== nombre);
   console.log(newKoders);
 
   const newObject = {
     koders: newKoders,
   };
-
-  // Guardar cambios
-  const nuevoArchivo = JSON.stringify(newObject, null, 2); // Convertimos el objeto a un String nuevo
+  const nuevoArchivo = JSON.stringify(newObject, null, 2); 
   await fs.writeFile("koders.json", nuevoArchivo, "utf8");
 
-  // Enviamos respuesta
-  res.status(200); // Estado de creado
+  res.status(200); 
   res.json(newKoders);
 });
 
@@ -126,4 +109,38 @@ server.put("/koder", (req, res) => {
 
 server.listen(8000, () => {
   console.log("Servidor ejecutandose");
+});
+
+
+/*-------------------------------------------------------------------------------------------------------*/
+const express = require('express');
+const fs = require('fs/promises');
+
+const server = express();
+let jsonKoders = {
+  "koders":[
+    {"name":"Aaron","genero":"masculino"},
+    {"name":"Jose","genero":"masculino"},
+    {"name":"Alejandra","genero":"femenino"},
+    {"name":"William","genero":"masculino"}]};
+
+let jsonContent = JSON.stringify(jsonKoders);
+fs.writeFile("koders.json", jsonContent, 'utf8', function (err) {
+    if (err) {
+        console.log("Un error ha ocurrido");
+        return console.log(err);
+    }
+    console.log("Archivo JSON guardado");
+});
+
+
+server.get('/koders', async (req, res) =>{
+    const archivo = await fs.readFile("koders2.json", "utf8")
+    const objecto = JSON.parse(archivo)
+    const koders = objecto.koders;
+    res.json(koders)
+})
+
+server.listen(8001, () => {
+    console.log('Servidor ejecutandose')
 });
